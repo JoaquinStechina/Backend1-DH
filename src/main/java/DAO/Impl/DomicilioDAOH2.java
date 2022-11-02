@@ -96,12 +96,31 @@ public class DomicilioDAOH2 implements PatronDAO<Domicilio> {
             //3-Guardar
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            logger.error("Hubo un error al eliminar el paciente: "+e.getMessage());
+            logger.error("Hubo un error al eliminar el domicilio: "+e.getMessage());
         }
     }
 
     @Override
     public void modificar(Domicilio domicilio) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
 
+        try{
+            //1-Conectarme
+            connection = DriverManager.getConnection(DB_URL,DB_USER,DB_PASS);
+
+            //2-Sentenciar
+            preparedStatement = connection.prepareStatement("UPDATE domicilio SET calle=?, numero=?, localidad=?, provincia=? WHERE id=?");
+            preparedStatement.setString(1,domicilio.calle());
+            preparedStatement.setInt(2,domicilio.numero());
+            preparedStatement.setString(3,domicilio.localidad());
+            preparedStatement.setString(4,domicilio.provincia());
+            preparedStatement.setLong(5,domicilio.id());
+
+            //3-Guardar
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            logger.error("Hubo un error al modificar el domicilio: "+e.getMessage());
+        }
     }
 }

@@ -109,6 +109,25 @@ public class PacienteDAOH2 implements PatronDAO<Paciente> {
 
     @Override
     public void modificar(Paciente paciente) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
 
+        try{
+            //1-Conectarme
+            connection = DriverManager.getConnection(DB_URL,DB_USER,DB_PASS);
+
+            //2-Sentenciar
+            preparedStatement = connection.prepareStatement("UPDATE pacientes SET apellido=?, nombre=?, DNI=?, fecha_ingreso=? WHERE id=?");
+            preparedStatement.setString(1,paciente.getApellido());
+            preparedStatement.setString(2,paciente.getNombre());
+            preparedStatement.setString(3,paciente.getDNI());
+            preparedStatement.setDate(4,paciente.getFecha_ingreso());
+            preparedStatement.setLong(5,paciente.getId());
+
+            //3-Guardar
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            logger.error("Hubo un error al modificar el domicilio: "+e.getMessage());
+        }
     }
 }
